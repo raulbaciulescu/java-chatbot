@@ -18,16 +18,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private String firstName;
+    @Column(nullable = false)
     private String lastName;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Override
@@ -64,6 +69,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }
