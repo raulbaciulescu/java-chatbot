@@ -14,4 +14,9 @@ public class DemoController {
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello");
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<String> sayHello2() {
+        return ResponseEntity.ok("Hello");
+    }
 }
