@@ -1,7 +1,6 @@
 package com.university.controller;
 
 
-
 import com.university.dto.MessageRequest;
 import com.university.dto.MessageResponse;
 import com.university.service.api.MessageService;
@@ -23,8 +22,8 @@ public class MessageController {
         return messageService.save(messageRequest);
     }
 
-    @GetMapping("/{chatId}")
-    public List<MessageResponse> getMessages(@PathVariable Integer chatId) {
-        return messageService.getMessagesByChat(chatId);
+    @GetMapping("/{chatId}/{page}")
+    public List<MessageResponse> getMessages(@PathVariable Integer chatId, @PathVariable Integer page) {
+        return messageService.getMessagesByChat(chatId, page);
     }
 }

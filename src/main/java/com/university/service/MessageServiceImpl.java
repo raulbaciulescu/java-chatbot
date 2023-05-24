@@ -11,8 +11,10 @@ import com.university.repository.ChatRepository;
 import com.university.repository.MessageRepository;
 import com.university.service.api.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageResponse save(MessageRequest messageRequest) {
+        System.out.println(messageRequest);
         MessageResponse messageResponse = sendMessage(messageRequest);
         Chat chat = getChat(messageRequest, messageResponse);
 
@@ -52,8 +55,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageResponse> getMessagesByChat(Integer chatId) {
-        return messageRepository.findByChatId(chatId)
+    public List<MessageResponse> getMessagesByChat(Integer chatId, Integer page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return messageRepository.findAllByChatIdOrderByIdDesc(chatId, pageable)
                 .stream()
                 .map(m -> new MessageResponse(m.getText(), "", m.getType(), chatId))
                 .toList();
@@ -75,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private MessageResponse sendMessage(MessageRequest messageRequest) {
-        List<Message> messages = messageRepository.findAll();
+        List<Message> messages = messageRepository.findByChatId(messageRequest.chatId());
         Map<String, String> map = messages.stream()
                 .collect(Collectors.toMap(
                         message -> message.getType() == MessageType.USER ? "input" : "output",

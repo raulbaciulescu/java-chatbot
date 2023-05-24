@@ -8,5 +8,5 @@ import java.util.List;
 public interface MessageService {
     MessageResponse save(MessageRequest messageRequest);
 
-    List<MessageResponse> getMessagesByChat(Integer chatId);
+    List<MessageResponse> getMessagesByChat(Integer chatId, Integer page);
 }
