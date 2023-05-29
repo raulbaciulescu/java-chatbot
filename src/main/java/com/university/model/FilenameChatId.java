@@ -11,11 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "chats")
-public class Chat {
+@Table(name = "filename_chatid")
+public class FilenameChatId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String title;
     private String filename;
+    @Column(name = "chatid")
+    private Integer chatId;
+
+    public FilenameChatId(String filename, Integer chatId) {
+        this.filename = filename;
+        this.chatId = chatId;
+    }
 }

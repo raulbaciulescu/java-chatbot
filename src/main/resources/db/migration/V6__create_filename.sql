@@ -1,0 +1,1 @@
+ALTER TABLE chats ADD filename varchar(100);
