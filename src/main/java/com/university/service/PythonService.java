@@ -1,9 +1,6 @@
 package com.university.service;
 
-import com.university.dto.MessagePdfRequest;
-import com.university.dto.MessageRequestToPython;
-import com.university.dto.MessageRequestToPythonWithFilename;
-import com.university.dto.MessageResponse;
+import com.university.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -11,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,13 @@ public class PythonService {
     private String url;
     private final RestTemplate restTemplate;
 
-    public MessageResponse createMessage(MessageRequestToPython messageRequest) {
+    public <T> MessageResponse sendMessageToPython(T request, String url) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<MessageRequestToPython> requestBody = new HttpEntity<>(messageRequest, headers);
+        HttpEntity<T> requestBody = new HttpEntity<>(request, headers);
 
         ResponseEntity<MessageResponse> response = restTemplate.exchange(
-                url + "/messages",
+                url,
                 HttpMethod.POST,
                 requestBody, MessageResponse.class);
 
@@ -48,15 +47,17 @@ public class PythonService {
         return response.getBody();
     }
 
-    public MessageResponse createPdfMessageWithFilename(MessageRequestToPythonWithFilename messageRequest) {
+    public SpeechRecognitionResponse transcribe(MultipartFile file) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<MessageRequestToPythonWithFilename> requestBody = new HttpEntity<>(messageRequest, headers);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        ResponseEntity<MessageResponse> response = restTemplate.exchange(
-                url + "/pdf-messages/without-pdf",
-                HttpMethod.POST,
-                requestBody, MessageResponse.class);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<SpeechRecognitionResponse> response = restTemplate.postForEntity(
+                url + "/transcribe",
+                requestEntity, SpeechRecognitionResponse.class);
 
         return response.getBody();
     }

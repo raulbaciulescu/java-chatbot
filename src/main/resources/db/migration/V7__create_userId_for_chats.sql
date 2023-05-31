@@ -1,1 +1,1 @@
--- ALTER TABLE chats ADD user_id varchar(100);
+ALTER TABLE chats ADD user_id integer;

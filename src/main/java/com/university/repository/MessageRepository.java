@@ -12,4 +12,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Pagi
     List<Message> findByChatId(Integer chatId);
 
     Page<Message> findAllByChatIdOrderByIdDesc(Integer chatId, Pageable pageable);
+
+    void deleteByChatId(Integer chatId);
 }

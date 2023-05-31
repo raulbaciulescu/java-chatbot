@@ -17,8 +17,8 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "chat_fk", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_fk")
     private Chat chat;
     private String text;
     private MessageType type;

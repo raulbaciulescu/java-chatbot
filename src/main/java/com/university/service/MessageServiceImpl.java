@@ -7,12 +7,15 @@ import com.university.exception.ResourceNotFoundException;
 import com.university.model.Chat;
 import com.university.model.Message;
 import com.university.model.MessageType;
+import com.university.model.User;
 import com.university.repository.ChatRepository;
 import com.university.repository.MessageRepository;
 import com.university.service.api.MessagePdfService;
 import com.university.service.api.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -28,6 +31,8 @@ public class MessageServiceImpl implements MessageService {
     private final ChatRepository chatRepository;
     private final PythonService pythonService;
     private final MessagePdfService messagePdfService;
+    @Value("${python-chat-bot.url}")
+    private String url;
 
     @Override
     public List<MessageResponse> getMessagesByChat(Integer chatId, Integer page) {
@@ -47,24 +52,13 @@ public class MessageServiceImpl implements MessageService {
             return sendNormalMessage(messageRequest, chat);
     }
 
-    private MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
+    @Override
+    public MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
         MessageResponse messageResponse = buildAndSendMessageToPython(messageRequest);
-        Message messageAi = Message.builder()
-                .chat(chat)
-                .type(MessageType.AI)
-                .text(messageResponse.text())
-                .build();
+        messagePdfService.createAndSaveMessages(messageRequest, messageResponse, chat);
 
-        Message messageUser = Message.builder()
-                .chat(chat)
-                .type(MessageType.USER)
-                .text(messageRequest.text())
-                .build();
-
-        messageRepository.save(messageUser);
-        messageRepository.save(messageAi);
-
-        return new MessageResponse(messageResponse.text(),
+        return new MessageResponse(
+                messageResponse.text().trim(),
                 chat.getTitle(),
                 MessageType.AI,
                 chat.getId(),
@@ -73,10 +67,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private Chat getChat(Integer chatId) {
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Chat chat;
         if (chatId == 0) {
             chat = new Chat();
             chat.setTitle("Normal chat");
+            chat.setUserId(loggedUser.getId());
             chatRepository.save(chat);
         } else {
             chat = chatRepository.findById(chatId).orElseThrow(() -> new ResourceNotFoundException("This chat doesn't exist"));
@@ -99,6 +95,6 @@ public class MessageServiceImpl implements MessageService {
                 map.entrySet().stream().toList(),
                 messageRequest.chatId() == 0
         );
-        return pythonService.createMessage(messageRequestToPython);
+        return pythonService.sendMessageToPython(messageRequestToPython, url + "/messages");
     }
 }

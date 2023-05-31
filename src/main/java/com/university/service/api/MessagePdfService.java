@@ -9,4 +9,6 @@ public interface MessagePdfService {
     MessageResponse saveMessageWithPdfFile(MessagePdfRequest request);
 
     MessageResponse sendMessageWithPdfFilename(MessageRequest request, Chat chat);
+
+    void createAndSaveMessages(MessageRequest request, MessageResponse messageResponse, Chat chat);
 }

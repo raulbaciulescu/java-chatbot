@@ -1,7 +1,6 @@
 package com.university.controller;
 
 import com.university.dto.MessagePdfRequest;
-import com.university.dto.MessageRequest;
 import com.university.dto.MessageResponse;
 import com.university.service.api.MessagePdfService;
 import lombok.RequiredArgsConstructor;

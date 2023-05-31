@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
     List<ChatResponse> findAllBy();
+
+    List<ChatResponse> findAllByUserId(Integer userId);
+
+    void deleteById(Integer id);
 }
