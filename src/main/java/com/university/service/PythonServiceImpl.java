@@ -13,9 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class PythonService {
-    @Value("${python-chat-bot.url}")
-    private String url;
+public class PythonServiceImpl {
+    @Value("${python-chat-bot.transcribe}")
+    private String transcribeUrl;
+    @Value("${python-chat-bot.pdf-message}")
+    private String pdfMessageUrl;
     private final RestTemplate restTemplate;
 
     public <T> MessageResponse sendMessageToPython(T request, String url) {
@@ -26,7 +28,9 @@ public class PythonService {
         ResponseEntity<MessageResponse> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
-                requestBody, MessageResponse.class);
+                requestBody,
+                MessageResponse.class
+        );
 
         return response.getBody();
     }
@@ -41,8 +45,10 @@ public class PythonService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<MessageResponse> response = restTemplate.postForEntity(
-                url + "/pdf-messages",
-                requestEntity, MessageResponse.class);
+                pdfMessageUrl,
+                requestEntity,
+                MessageResponse.class
+        );
 
         return response.getBody();
     }
@@ -56,8 +62,10 @@ public class PythonService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<SpeechRecognitionResponse> response = restTemplate.postForEntity(
-                url + "/transcribe",
-                requestEntity, SpeechRecognitionResponse.class);
+                transcribeUrl,
+                requestEntity,
+                SpeechRecognitionResponse.class
+        );
 
         return response.getBody();
     }

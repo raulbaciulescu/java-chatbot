@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl {
     private static final String SECRET_KEY = "566B5970337336763979244226452948404D635166546A576D5A713474377721";
 
     public String extractUsername(String token) {

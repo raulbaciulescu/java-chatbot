@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
-    private final PythonService pythonService;
+    private final PythonServiceImpl pythonServiceImpl;
     private final MessagePdfService messagePdfService;
-    @Value("${python-chat-bot.url}")
+    @Value("${python-chat-bot.normal-message}")
     private String url;
 
     @Override
@@ -95,6 +95,6 @@ public class MessageServiceImpl implements MessageService {
                 map.entrySet().stream().toList(),
                 messageRequest.chatId() == 0
         );
-        return pythonService.sendMessageToPython(messageRequestToPython, url + "/messages");
+        return pythonServiceImpl.sendMessageToPython(messageRequestToPython, url);
     }
 }

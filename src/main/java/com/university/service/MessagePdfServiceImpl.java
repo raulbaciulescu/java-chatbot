@@ -22,14 +22,14 @@ import org.springframework.stereotype.Service;
 public class MessagePdfServiceImpl implements MessagePdfService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
-    private final PythonService pythonService;
-    @Value("${python-chat-bot.url}")
+    private final PythonServiceImpl pythonServiceImpl;
+    @Value("${python-chat-bot.filename-message}")
     private String url;
 
     @Override
     public MessageResponse saveMessageWithPdfFile(MessagePdfRequest request) {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        MessageResponse messageResponse = pythonService.createPdfMessageWithFile(request);
+        MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);
 
         Chat chat = new Chat();
         chat.setTitle("Pdf chat");
@@ -62,9 +62,9 @@ public class MessagePdfServiceImpl implements MessagePdfService {
 
     @Override
     public MessageResponse sendMessageWithPdfFilename(MessageRequest request, Chat chat) {
-        MessageResponse messageResponse = pythonService.sendMessageToPython(
+        MessageResponse messageResponse = pythonServiceImpl.sendMessageToPython(
                 new MessageRequestToPythonWithFilename(request.text(), chat.getFilename()),
-                url + "/pdf-messages/without-pdf"
+                url
         );
         createAndSaveMessages(request, messageResponse, chat);
         return new MessageResponse(

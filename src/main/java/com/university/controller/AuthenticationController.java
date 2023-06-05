@@ -3,7 +3,7 @@ package com.university.controller;
 import com.university.dto.AuthenticationRequest;
 import com.university.dto.AuthenticationResponse;
 import com.university.dto.RegisterRequest;
-import com.university.service.AuthenticationService;
+import com.university.service.AuthenticationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin
 public class AuthenticationController {
-    private final AuthenticationService service;
+    private final AuthenticationServiceImpl service;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
