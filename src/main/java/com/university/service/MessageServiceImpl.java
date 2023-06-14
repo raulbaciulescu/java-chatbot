@@ -1,8 +1,6 @@
 package com.university.service;
 
-import com.university.dto.MessageRequest;
-import com.university.dto.MessageRequestToPython;
-import com.university.dto.MessageResponse;
+import com.university.dto.*;
 import com.university.exception.ResourceNotFoundException;
 import com.university.model.Chat;
 import com.university.model.Message;
@@ -33,6 +31,8 @@ public class MessageServiceImpl implements MessageService {
     private final MessagePdfService messagePdfService;
     @Value("${python-chat-bot.normal-message}")
     private String url;
+    @Value("${python-chat-bot.filename-message}")
+    private String urlWithFileName;
 
     @Override
     public List<MessageResponse> getMessagesByChat(Integer chatId, Integer page) {
@@ -47,15 +47,35 @@ public class MessageServiceImpl implements MessageService {
     public MessageResponse save(MessageRequest messageRequest) {
         Chat chat = getChat(messageRequest.chatId());
         if (chat.getFilename() != null)
-            return messagePdfService.sendMessageWithPdfFilename(messageRequest, chat);
+            return sendMessageWithPdfFilename(messageRequest, chat);
         else
             return sendNormalMessage(messageRequest, chat);
     }
 
     @Override
-    public MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
+    public MessageResponse saveMessageWithPdf(MessagePdfRequest request) {
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);
+
+        Chat chat = new Chat();
+        chat.setTitle("Pdf chat");
+        chat.setUserId(loggedUser.getId());
+        chat.setFilename(request.file().getOriginalFilename());
+        chat = chatRepository.save(chat);
+
+        createAndSaveMessages(new MessageRequest(request.text(), MessageType.USER, messageResponse.chatId()), messageResponse, chat);
+        return new MessageResponse(
+                messageResponse.text().trim(),
+                messageResponse.title(),
+                MessageType.AI,
+                chat.getId(),
+                chat.getFilename()
+        );
+    }
+
+    private MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
         MessageResponse messageResponse = buildAndSendMessageToPython(messageRequest);
-        messagePdfService.createAndSaveMessages(messageRequest, messageResponse, chat);
+        createAndSaveMessages(messageRequest, messageResponse, chat);
 
         return new MessageResponse(
                 messageResponse.text().trim(),
@@ -66,12 +86,44 @@ public class MessageServiceImpl implements MessageService {
         );
     }
 
+    private MessageResponse sendMessageWithPdfFilename(MessageRequest request, Chat chat) {
+        MessageResponse messageResponse = pythonServiceImpl.sendMessageToPython(
+                new MessageRequestToPythonWithFilename(request.text(), chat.getFilename()),
+                urlWithFileName
+        );
+        createAndSaveMessages(request, messageResponse, chat);
+        return new MessageResponse(
+                messageResponse.text().trim(),
+                messageResponse.title(),
+                MessageType.AI,
+                chat.getId(),
+                chat.getFilename()
+        );
+    }
+
+    private void createAndSaveMessages(MessageRequest request, MessageResponse messageResponse, Chat chat) {
+        Message messageAi = Message.builder()
+                .chat(chat)
+                .type(MessageType.AI)
+                .text(messageResponse.text().trim())
+                .build();
+
+        Message messageUser = Message.builder()
+                .chat(chat)
+                .type(MessageType.USER)
+                .text(request.text())
+                .build();
+
+        messageRepository.save(messageUser);
+        messageRepository.save(messageAi);
+    }
+
     private Chat getChat(Integer chatId) {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Chat chat;
         if (chatId == 0) {
             chat = new Chat();
-            chat.setTitle("Normal chat");
+            chat.setTitle("New chat");
             chat.setUserId(loggedUser.getId());
             chatRepository.save(chat);
         } else {

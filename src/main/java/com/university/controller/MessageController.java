@@ -4,7 +4,6 @@ package com.university.controller;
 import com.university.dto.MessagePdfRequest;
 import com.university.dto.MessageRequest;
 import com.university.dto.MessageResponse;
-import com.university.service.api.MessagePdfService;
 import com.university.service.api.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageController {
     private final MessageService messageService;
-    private final MessagePdfService messagePdfService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,6 +31,6 @@ public class MessageController {
 
     @PostMapping("/pdf")
     public MessageResponse saveMessageWithPdf(@RequestPart MultipartFile file, @RequestPart String text) {
-        return messagePdfService.saveMessageWithPdfFile(new MessagePdfRequest(file, text));
+        return messageService.saveMessageWithPdf(new MessagePdfRequest(file, text));
     }
 }

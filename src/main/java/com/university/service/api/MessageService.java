@@ -1,5 +1,6 @@
 package com.university.service.api;
 
+import com.university.dto.MessagePdfRequest;
 import com.university.dto.MessageRequest;
 import com.university.dto.MessageResponse;
 import com.university.model.Chat;
@@ -11,5 +12,5 @@ public interface MessageService {
 
     List<MessageResponse> getMessagesByChat(Integer chatId, Integer page);
 
-    MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat);
+    MessageResponse saveMessageWithPdf(MessagePdfRequest messagePdfRequest);
 }
