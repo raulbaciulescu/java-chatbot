@@ -6,7 +6,6 @@ import com.university.dto.MessageResponse;
 import com.university.model.*;
 import com.university.repository.ChatRepository;
 import com.university.repository.MessageRepository;
-import com.university.service.api.MessagePdfService;
 import com.university.service.api.MessageService;
 import com.university.util.WithMockCustomUser;
 import org.junit.jupiter.api.Test;
@@ -39,8 +38,6 @@ class MessageServiceImplTest {
     private MessageRepository messageRepository;
     @MockBean
     private ChatRepository chatRepository;
-    @MockBean
-    private MessagePdfService messagePdfService;
     @MockBean
     private PythonServiceImpl pythonService;
     @Value("${python-chat-bot.normal-message}")
@@ -84,7 +81,6 @@ class MessageServiceImplTest {
         Mockito.when(chatRepository.findById(1)).thenReturn(Optional.of(chat));
         Mockito.when(messageRepository.findByChatId(messageRequest.chatId())).thenReturn(messageList);
         Mockito.when(pythonService.sendMessageToPython(messageRequestToPython, url)).thenReturn(messageResponse);
-        Mockito.doNothing().when(messagePdfService).createAndSaveMessages(messageRequest, messageResponse, chat);
         MessageResponse actualMessageResponse = messageService.save(messageRequest);
         assertEquals(actualMessageResponse.text(), messageResponse.text());
         assertEquals(actualMessageResponse.type(), messageResponse.type());

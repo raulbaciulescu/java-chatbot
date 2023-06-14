@@ -8,7 +8,6 @@ import com.university.model.MessageType;
 import com.university.model.User;
 import com.university.repository.ChatRepository;
 import com.university.repository.MessageRepository;
-import com.university.service.api.MessagePdfService;
 import com.university.service.api.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,6 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
     private final PythonServiceImpl pythonServiceImpl;
-    private final MessagePdfService messagePdfService;
     @Value("${python-chat-bot.normal-message}")
     private String url;
     @Value("${python-chat-bot.filename-message}")
@@ -52,6 +50,7 @@ public class MessageServiceImpl implements MessageService {
             return sendNormalMessage(messageRequest, chat);
     }
 
+    @Override
     public MessageResponse saveMessageWithPdf(MessagePdfRequest request) {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);

@@ -7,14 +7,10 @@ import com.university.model.Chat;
 import com.university.repository.ChatRepository;
 import com.university.repository.MessageRepository;
 import com.university.service.api.ChatService;
-import com.university.service.api.MessagePdfService;
-import com.university.service.api.MessageService;
 import com.university.util.ChatResponseImpl;
 import com.university.util.WithMockCustomUser;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,8 +34,6 @@ class ChatServiceImplTest {
     private MessageRepository messageRepository;
     @MockBean
     private ChatRepository chatRepository;
-    @MockBean
-    private MessagePdfService messagePdfService;
     @MockBean
     private PythonServiceImpl pythonService;
     @Value("${python-chat-bot.normal-message}")

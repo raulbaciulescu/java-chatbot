@@ -1,17 +1,13 @@
 package com.university.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.university.dto.ChatResponse;
 import com.university.dto.MessagePdfRequest;
 import com.university.dto.MessageRequest;
 import com.university.dto.MessageResponse;
 import com.university.model.MessageType;
 import com.university.model.Role;
 import com.university.service.JwtServiceImpl;
-import com.university.service.api.ChatService;
-import com.university.service.api.MessagePdfService;
 import com.university.service.api.MessageService;
-import com.university.util.ChatResponseImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,18 +23,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,8 +48,6 @@ class MessageControllerTest {
     private JwtServiceImpl jwtService;
     @MockBean
     private UserDetailsService userDetailsService;
-    @MockBean
-    private MessagePdfService messagePdfService;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
