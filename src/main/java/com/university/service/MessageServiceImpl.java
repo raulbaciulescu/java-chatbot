@@ -52,7 +52,6 @@ public class MessageServiceImpl implements MessageService {
             return sendNormalMessage(messageRequest, chat);
     }
 
-    @Override
     public MessageResponse saveMessageWithPdf(MessagePdfRequest request) {
         User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);
@@ -144,8 +143,7 @@ public class MessageServiceImpl implements MessageService {
 
         MessageRequestToPython messageRequestToPython = new MessageRequestToPython(
                 messageRequest.text(),
-                map.entrySet().stream().toList(),
-                messageRequest.chatId() == 0
+                map.entrySet().stream().toList()
         );
         return pythonServiceImpl.sendMessageToPython(messageRequestToPython, url);
     }

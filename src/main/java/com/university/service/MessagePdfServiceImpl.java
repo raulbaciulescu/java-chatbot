@@ -28,37 +28,23 @@ public class MessagePdfServiceImpl implements MessagePdfService {
 
     @Override
     public MessageResponse saveMessageWithPdfFile(MessagePdfRequest request) {
-//        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);
-//
-//        Chat chat = new Chat();
-//        chat.setTitle("Pdf chat");
-//        chat.setUserId(loggedUser.getId());
-//        chat.setFilename(request.file().getOriginalFilename());
-//        chat = chatRepository.save(chat);
-//        Message messageAi = Message.builder()
-//                .chat(chat)
-//                .type(MessageType.AI)
-//                .text(messageResponse.text().trim())
-//                .build();
-//
-//        Message messageUser = Message.builder()
-//                .chat(chat)
-//                .type(MessageType.USER)
-//                .text(request.text())
-//                .build();
-//
-//        messageRepository.save(messageUser);
-//        messageRepository.save(messageAi);
-//
-//        return new MessageResponse(
-//                messageResponse.text().trim(),
-//                messageResponse.title(),
-//                MessageType.AI,
-//                chat.getId(),
-//                chat.getFilename()
-//        );
-        return null;
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        MessageResponse messageResponse = pythonServiceImpl.createPdfMessageWithFile(request);
+
+        Chat chat = new Chat();
+        chat.setTitle("Pdf chat");
+        chat.setUserId(loggedUser.getId());
+        chat.setFilename(request.file().getOriginalFilename());
+        chat = chatRepository.save(chat);
+        createAndSaveMessages(new MessageRequest(request.text(), MessageType.USER, chat.getId()), messageResponse, chat);
+
+        return new MessageResponse(
+                messageResponse.text().trim(),
+                messageResponse.title(),
+                MessageType.AI,
+                chat.getId(),
+                chat.getFilename()
+        );
     }
 
     @Override

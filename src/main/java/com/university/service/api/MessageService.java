@@ -12,5 +12,5 @@ public interface MessageService {
 
     List<MessageResponse> getMessagesByChat(Integer chatId, Integer page);
 
-    MessageResponse saveMessageWithPdf(MessagePdfRequest messagePdfRequest);
+    MessageResponse saveMessageWithPdf(MessagePdfRequest request);
 }
