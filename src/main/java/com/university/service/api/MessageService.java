@@ -10,6 +10,4 @@ public interface MessageService {
     MessageResponse save(MessageRequest messageRequest);
 
     List<MessageResponse> getMessagesByChat(Integer chatId, Integer page);
-
-    MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat);
 }

@@ -52,8 +52,7 @@ public class MessageServiceImpl implements MessageService {
             return sendNormalMessage(messageRequest, chat);
     }
 
-    @Override
-    public MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
+    private MessageResponse sendNormalMessage(MessageRequest messageRequest, Chat chat) {
         MessageResponse messageResponse = buildAndSendMessageToPython(messageRequest);
         messagePdfService.createAndSaveMessages(messageRequest, messageResponse, chat);
 
@@ -92,8 +91,7 @@ public class MessageServiceImpl implements MessageService {
 
         MessageRequestToPython messageRequestToPython = new MessageRequestToPython(
                 messageRequest.text(),
-                map.entrySet().stream().toList(),
-                messageRequest.chatId() == 0
+                map.entrySet().stream().toList()
         );
         return pythonServiceImpl.sendMessageToPython(messageRequestToPython, url);
     }

@@ -36,20 +36,7 @@ public class MessagePdfServiceImpl implements MessagePdfService {
         chat.setUserId(loggedUser.getId());
         chat.setFilename(request.file().getOriginalFilename());
         chat = chatRepository.save(chat);
-        Message messageAi = Message.builder()
-                .chat(chat)
-                .type(MessageType.AI)
-                .text(messageResponse.text().trim())
-                .build();
-
-        Message messageUser = Message.builder()
-                .chat(chat)
-                .type(MessageType.USER)
-                .text(request.text())
-                .build();
-
-        messageRepository.save(messageUser);
-        messageRepository.save(messageAi);
+        createAndSaveMessages(new MessageRequest(request.text(), MessageType.USER, chat.getId()), messageResponse, chat);
 
         return new MessageResponse(
                 messageResponse.text().trim(),
