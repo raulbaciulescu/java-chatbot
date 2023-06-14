@@ -121,7 +121,7 @@ class MessageControllerTest {
         );
         MessagePdfRequest messagePdfRequest = new MessagePdfRequest(multipartFile, "message");
         String jwtToken = jwtService.generateToken(dummyUser);
-        Mockito.when(messagePdfService.saveMessageWithPdfFile(messagePdfRequest)).thenReturn(messageResponse);
+        Mockito.when(messageService.saveMessageWithPdf(messagePdfRequest)).thenReturn(messageResponse);
         Mockito.when(userDetailsService.loadUserByUsername(eq("foo"))).thenReturn(dummyUser);
 
 
@@ -141,7 +141,7 @@ class MessageControllerTest {
     }
 
     @Test
-    public void contextLoads() throws Exception {
+    void contextLoads() throws Exception {
         assertThat(controller).isNotNull();
     }
 }

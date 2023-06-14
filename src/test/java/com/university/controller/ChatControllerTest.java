@@ -113,7 +113,7 @@ class ChatControllerTest {
     }
 
     @Test
-    public void contextLoads() throws Exception {
+    void contextLoads() throws Exception {
         assertThat(controller).isNotNull();
     }
 }
