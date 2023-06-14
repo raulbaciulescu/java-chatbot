@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtServiceImpl;
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
@@ -31,7 +31,7 @@ public class AuthenticationService {
                 .build();
 
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtServiceImpl.generateToken(user);
         return new AuthenticationResponse(jwtToken);
     }
 
@@ -44,7 +44,7 @@ public class AuthenticationService {
         );
         var user = userRepository.findByEmail(authenticationRequest.email())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtServiceImpl.generateToken(user);
         return new AuthenticationResponse(jwtToken);
     }
 }

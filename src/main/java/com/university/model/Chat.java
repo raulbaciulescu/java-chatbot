@@ -19,4 +19,6 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
+    private String filename;
+    private Integer userId;
 }
