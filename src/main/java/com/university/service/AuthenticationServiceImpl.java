@@ -32,7 +32,7 @@ public class AuthenticationServiceImpl {
 
         userRepository.save(user);
         var jwtToken = jwtServiceImpl.generateToken(user);
-        return new AuthenticationResponse(jwtToken);
+        return new AuthenticationResponse(jwtToken, registerRequest.firstName());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
@@ -45,6 +45,6 @@ public class AuthenticationServiceImpl {
         var user = userRepository.findByEmail(authenticationRequest.email())
                 .orElseThrow();
         var jwtToken = jwtServiceImpl.generateToken(user);
-        return new AuthenticationResponse(jwtToken);
+        return new AuthenticationResponse(jwtToken, user.getFirstName());
     }
 }
