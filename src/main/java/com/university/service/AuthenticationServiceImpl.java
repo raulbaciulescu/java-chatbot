@@ -4,6 +4,7 @@ package com.university.service;
 import com.university.dto.AuthenticationRequest;
 import com.university.dto.AuthenticationResponse;
 import com.university.dto.RegisterRequest;
+import com.university.exception.ResourceNotFoundException;
 import com.university.model.Role;
 import com.university.model.User;
 import com.university.repository.UserRepository;
@@ -43,7 +44,7 @@ public class AuthenticationServiceImpl {
                 )
         );
         var user = userRepository.findByEmail(authenticationRequest.email())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
         var jwtToken = jwtServiceImpl.generateToken(user);
         return new AuthenticationResponse(jwtToken, user.getFirstName());
     }
